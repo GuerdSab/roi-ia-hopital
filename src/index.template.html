@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ROI IA Hospitalière · Aide à la décision multicritère · CHU Angers</title>
+<meta name="description" content="Évaluer le retour sur investissement réel d'un projet d'IA hospitalière : grille MCDA en neuf familles, comparateur, atelier multi-acteurs, suivi dans le temps. CHU Angers, 2026.">
+<meta name="theme-color" content="#1B3A6B">
+<meta name="application-name" content="ROI IA Hospitalière">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ROI IA">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<style>
+/*__CSS__*/
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <img class="topbar-logo" src="/*__LOGO__*/" alt="CHU Angers">
+    <div class="topbar-title"><strong>ROI IA Hospitalière</strong><span>Aide à la décision multicritère · <span data-version></span></span></div>
+    <nav class="topnav" aria-label="Navigation">
+      <button data-nav="home">🏠 Accueil</button>
+      <button data-nav="eval">📝 Évaluer</button>
+      <button data-nav="compare">⚖️ Comparer</button>
+      <button data-nav="library">🗂️ Mes évaluations</button>
+      <button data-nav="about">ℹ️ À propos</button>
+    </nav>
+    <button class="iconbtn" onclick="openHelp()" title="Aide et glossaire" aria-label="Aide">?</button>
+  </div>
+</header>
+<div class="offline" id="offline">Hors ligne · l’application reste utilisable</div>
+
+<main class="page">
+
+  <!-- ===================== ACCUEIL ===================== -->
+  <section class="screen" id="scr-home">
+    <div class="hero">
+      <div class="hero-pills"><span class="pill pill-cyan">Congrès ARAMOS 2026 · Montpellier</span><span class="pill pill-mint">Grille MCDA · 9 familles</span><span id="homeStats" style="display:none"></span></div>
+      <h1>Évaluer le <span>ROI réel</span> d’un projet d’IA hospitalière avant de signer.</h1>
+      <p>Un calcul que les éditeurs ne feront pas pour vous. Neuf familles de critères, sept profils d’établissement, une feuille de route priorisée, et les questions à poser à l’éditeur. Pour directions générales, DSN, CME, directions des soins et équipes projet.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="startNewEval()">Commencer une évaluation</button>
+        <button class="btn btn-ghost" onclick="libImportLink()">Reprendre depuis un lien</button>
+        <button class="btn btn-ghost" onclick="showScreen('about')">Comprendre la méthode</button>
+      </div>
+    </div>
+    <div id="homeLast"></div>
+    <div class="panel">
+      <h2 class="section-title">Explorer avec un exemple</h2>
+      <p class="section-sub">Cinq scénarios types pour découvrir l’outil ou calibrer votre propre évaluation.</p>
+      <div class="grid grid-3" id="homeExamples"></div>
+    </div>
+    <div class="panel">
+      <h2 class="section-title">Ce que l’outil produit</h2>
+      <div class="grid grid-4">
+        <div class="card"><span class="card-icon">🎯</span><h3>Score pondéré</h3><p>Adapté au profil d’établissement, au contexte et à la nature du projet ; pondérations ajustables et analyse de sensibilité.</p></div>
+        <div class="card"><span class="card-icon">🗺</span><h3>Feuille de route</h3><p>Actions priorisées avant de signer, avant le pilote, avant la généralisation ; 34 questions à poser à l’éditeur.</p></div>
+        <div class="card"><span class="card-icon">⚖️</span><h3>Comparer et suivre</h3><p>Deux solutions côte à côte, atelier multi-acteurs, suivi dans le temps : les divergences et les trajectoires deviennent visibles.</p></div>
+        <div class="card"><span class="card-icon">📄</span><h3>Synthèse exécutive</h3><p>Une page pour CODIR ou CME, un lien de sauvegarde qui contient toute l’évaluation, et la bibliothèque locale.</p></div>
+      </div>
+    </div>
+    <div class="footer">Outil ROI IA Hospitalière · Saber Aloui, Françoise Tran, Myriam Le Goff-Pronost · CHU Angers 2026<br>Aide à la décision : ne remplace pas un audit juridique, technique ou médical.</div>
+  </section>
+
+  <!-- ===================== ÉVALUER ===================== -->
+  <section class="screen" id="scr-eval">
+    <div class="steps"><div class="dot" id="estep0"></div><div class="dot" id="estep1"></div><div class="dot" id="estep2"></div><span class="lbl" id="estepLbl"></span></div>
+
+    <div id="ev-ctx" class="panel">
+      <h2 class="section-title">1. Contexte du projet</h2>
+      <p class="section-sub">Ces informations adaptent les critères et prérèglent les pondérations. Aucune donnée nominative n’est obligatoire.</p>
+      <div class="form-row">
+        <div class="field"><label for="projectName">Nom du projet IA</label><input id="projectName" placeholder="Ex. IA radiologie, planning bloc, codage PMSI…"></div>
+        <div class="field"><label for="domain">Domaine / service</label><input id="domain" placeholder="Radiologie, RH, bloc, pharmacie…"></div>
+      </div>
+      <div class="field"><label>Profil d’établissement</label></div>
+      <div class="profile-grid" id="profileGrid"></div>
+      <div class="profile-desc" id="profileDesc"></div>
+      <div class="form-row">
+        <div class="field"><label for="stage">Stade du projet</label><select id="stage"></select></div>
+        <div class="field"><label for="si">Maturité SI</label><select id="si"><option value="">Sélectionner</option><option value="fragile">Fragile / hétérogène</option><option value="moyen">En structuration</option><option value="mature">Intégré et performant</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="rh">Tension RH</label><select id="rh"><option value="">Sélectionner</option><option value="faible">Limitée</option><option value="moyenne">Modérée</option><option value="forte">Très forte</option></select></div>
+        <div class="field"><label for="change">Conduite du changement</label><select id="change"><option value="">Sélectionner</option><option value="faible">Peu structurée</option><option value="moyenne">En développement</option><option value="forte">Rodée et outillée</option></select></div>
+      </div>
+      <div class="field"><label>Nature du projet IA</label><p class="small" style="margin-bottom:8px">Adapte la première et la septième famille (valeur spécifique, cadre contraint).</p></div>
+      <div class="nature-grid" id="natureGrid"></div>
+      <div class="row" style="justify-content:space-between">
+        <button class="btn btn-secondary" onclick="showScreen('home')">← Accueil</button>
+        <button class="btn btn-primary" onclick="goEvalStep(1)">Continuer →</button>
+      </div>
+    </div>
+
+    <div id="ev-wiz" class="panel hidden">
+      <h2 class="section-title">2. Évaluation par dimension</h2>
+      <p class="section-sub">Notez chaque critère de 1 à 5, ou laissez les questions guidées calculer la note. ∅ exclut un critère du calcul plutôt que de le noter arbitrairement. Sur mobile, balayez pour changer de dimension.</p>
+      <div id="dimWizard"></div>
+      <div class="row" style="justify-content:space-between;margin-top:14px">
+        <button class="btn btn-secondary btn-sm" onclick="goEvalStep(0)">← Contexte</button>
+        <button class="btn btn-navy btn-sm" onclick="goEvalStep(2)">Voir les résultats →</button>
+      </div>
+    </div>
+
+    <div id="ev-res" class="hidden">
+      <h2 class="section-title">3. Résultats et recommandations</h2>
+      <div id="resultsRoot"></div>
+    </div>
+  </section>
+
+  <!-- ===================== COMPARER ===================== -->
+  <section class="screen" id="scr-compare">
+    <div class="panel">
+      <h2 class="section-title">Comparer et consolider</h2>
+      <div class="seg block" id="cmpSeg" style="margin:8px 0 10px"></div>
+      <p class="section-sub" id="cmpHint"></p>
+      <div class="picker" id="cmpPicker"></div>
+    </div>
+    <div id="cmpOut"></div>
+  </section>
+
+  <!-- ===================== MES ÉVALUATIONS ===================== -->
+  <section class="screen" id="scr-library">
+    <div class="panel">
+      <h2 class="section-title">Mes évaluations</h2>
+      <p class="section-sub">Enregistrées localement sur cet appareil (aucune transmission). Chaque évaluation dispose aussi d’un lien de sauvegarde que vous pouvez conserver ou partager.</p>
+      <div class="actions-bar">
+        <button class="btn btn-sm btn-primary" onclick="startNewEval()">＋ Nouvelle évaluation</button>
+        <button class="btn btn-sm btn-secondary" onclick="libImportLink()">🔗 Importer un lien</button>
+        <button class="btn btn-sm btn-secondary" onclick="libExportAll()">⬇ Exporter (JSON)</button>
+        <label class="btn btn-sm btn-secondary">⬆ Importer (JSON)<input type="file" accept="application/json,.json" class="sr-only" onchange="libImportFile(this)"></label>
+      </div>
+      <div id="libList"></div>
+    </div>
+  </section>
+
+  <!-- ===================== À PROPOS ===================== -->
+  <section class="screen" id="scr-about">
+    <div class="panel">
+      <h2 class="section-title">À propos de l’outil</h2>
+      <div class="ref"><strong>Communication de référence</strong>Aloui S., Tran F., Le Goff-Pronost M. <em>Investir dans l’intelligence artificielle à l’hôpital : quel cadre pour évaluer la création de valeur ?</em> Communication acceptée au congrès ARAMOS 2026, Montpellier, 19 et 20 novembre 2026. L’outil en est le complément opérationnel : grille MCDA en neuf familles, dette d’apprentissage, conditions d’appropriation. Article de revue en préparation.</div>
+      <div class="grid grid-3" style="margin-bottom:12px">
+        <div class="auteur"><div class="a-nom">Saber Aloui</div><div class="a-titre">CHU Angers · ESTER / IRSET, Université d’Angers</div><div class="a-bio">Directeur des services numériques du CHU d’Angers et du GHT 49, chercheur (HDR) : la donnée comme levier de transformation des organisations, évaluation des outils d’IA, management hospitalier à l’ère de l’IA.</div></div>
+        <div class="auteur"><div class="a-nom">Françoise Tran</div><div class="a-titre">Ethik-IA</div><div class="a-bio">Avocate, responsable de projet innovation : qualification juridique des systèmes d’IA (MDR, AI Act, garantie humaine), responsabilité et instruments contractuels.</div></div>
+        <div class="auteur"><div class="a-nom">Myriam Le Goff-Pronost</div><div class="a-titre">IMT Atlantique · LATIM-INSERM</div><div class="a-bio">Professeure, économiste de la santé : évaluation médico-économique des technologies e-santé et méthodes d’aide à la décision multicritère (MCDA).</div></div>
+      </div>
+      <div class="row"><span class="tag">Outil ROI IA <span data-version></span></span><span class="tag">CHU Angers</span><span class="tag">Fonctionne hors ligne</span></div>
+      <p class="small" style="margin-top:10px">Aide à la décision : l’outil ne remplace pas un audit juridique, technique ou médical. Les résultats s’interprètent dans le contexte spécifique de chaque établissement. Aucune donnée n’est transmise sans action explicite de votre part.</p>
+    </div>
+
+    <details class="sec" id="aboutHelp"><summary>❓ Aide et mode d’emploi</summary><div class="sec-body">
+      <div class="h3" style="margin-top:4px">🧭 Comment fonctionne l’outil</div>
+      <p class="small"><strong>1. Contexte</strong> : profil d’établissement, maturité SI, tension RH, conduite du changement et nature du projet adaptent les critères et prérèglent les pondérations. <strong>2. Évaluation</strong> : notez chaque critère de 1 à 5, dimension par dimension ; les questions guidées calculent une note à partir de questions factuelles. <strong>3. Résultats</strong> : score pondéré, radar, alertes, recommandations, feuille de route, balance effort / récompense, calculateur cinq ans, synthèse exécutive. <strong>Partage</strong> : un lien de sauvegarde contient toute l’évaluation ; la bibliothèque locale conserve vos évaluations sur cet appareil. <strong>Statistiques</strong> : un compteur anonyme (visites, évaluations, installations) est consultable dans la rubrique « Statistiques d’usage » ; il ne conserve ni adresse IP, ni identifiant, ni cookie.</p>
+      <div class="h3">🎚 L’échelle de notation</div>
+      <p class="small"><strong>1 Inexistant · 2 Faible · 3 Partiel · 4 Bon · 5 Excellent</strong>. Le bouton <strong>∅ Non évalué</strong> exclut un critère du calcul plutôt que de le noter arbitrairement : il apparaît comme angle mort à instruire. Un critère non documenté est une information, pas un zéro.</p>
+      <div class="h3">⚖️ Pondérations et sensibilité</div>
+      <p class="small">Chaque dimension a un poids de 1 à 5, préréglé selon le profil puis librement ajustable dans les résultats. Le score global est la moyenne des dimensions pondérée par ces poids. L’analyse de sensibilité montre si le verdict résiste à des pondérations différentes ; sinon, un consensus de gouvernance sur les priorités est nécessaire avant de décider.</p>
+      <div class="h3">🧮 La règle des cinq ans</div>
+      <p class="small">Coût total = abonnement annuel × 5 + intégration SI + formation et conduite du changement + coût de sortie. Les gains sont pondérés par le taux d’adoption réel : un projet adopté à 40 % produit 40 % du ROI attendu avec 100 % des coûts. C’est ce coût total, et non l’abonnement, qui doit figurer dans le dossier d’arbitrage.</p>
+      <div class="h3">⚖️ Effort / récompense</div>
+      <p class="small">Cinq items d’effort (apprentissage, double fonctionnement, supervision, perturbation des routines, vigilance) et cinq items de récompense (temps rendu, reconnaissance, compétence, prise sur l’outil, collectif), cotés 0 à 3. Le rapport effort / récompense n’entre pas dans le score global : il éclaire la condition d’appropriation (Siegrist, 1996) et génère des leviers à activer.</p>
+      <div class="h3">🧩 Les modules</div>
+      <p class="small"><strong>Comparer deux solutions</strong>, <strong>atelier multi-acteurs</strong> (chaque acteur évalue de son côté, l’outil révèle divergences et consensus), <strong>suivi dans le temps</strong> (T0, +6, +12 mois : trajectoire et signal précoce sur la dette d’apprentissage), <strong>fiche pratique</strong> (feuille de route et questions à l’éditeur, à imprimer), <strong>synthèse exécutive</strong> (une page pour CODIR ou CME).</p>
+    </div></details>
+
+    <details class="sec"><summary>🕸 Les neuf familles de la grille MCDA</summary><div class="sec-body"><div class="fam-list" id="aboutFams"></div></div></details>
+    <details class="sec"><summary>🏥 Les sept profils d’établissement</summary><div class="sec-body"><div class="fam-list" id="aboutProfiles"></div></div></details>
+    <details class="sec" id="aboutStats"><summary>📈 Statistiques d’usage</summary><div class="sec-body"><div id="statsWrap"></div></div></details>
+    <details class="sec"><summary>📖 Glossaire</summary><div class="sec-body"><input class="gloss-search" placeholder="Rechercher un terme…" oninput="renderGlossary(this.value)"><div id="glossList"></div></div></details>
+    <details class="sec"><summary>✉️ Contact</summary><div class="sec-body">
+      <form name="demande-acces-roi-ia" method="POST" data-netlify="true">
+        <input type="hidden" name="form-name" value="demande-acces-roi-ia">
+        <div class="form-row"><div class="field"><label>Nom</label><input name="nom" required></div><div class="field"><label>Email</label><input name="email" type="email" required></div></div>
+        <div class="form-row"><div class="field"><label>Fonction</label><input name="fonction"></div><div class="field"><label>Établissement</label><select name="type"><option>CHU / CHR</option><option>Centre hospitalier</option><option>Centre de lutte contre le cancer</option><option>Clinique privée</option><option>Groupe de cliniques</option><option>Groupe mutualiste</option><option>GHT public</option><option>Autre</option></select></div></div>
+        <div class="field"><label>Message</label><textarea name="message" placeholder="Votre besoin, un retour d’expérience, une demande de présentation…"></textarea></div>
+        <button class="btn btn-navy" type="submit">Envoyer</button>
+      </form>
+    </div></details>
+    <div class="footer">Outil ROI IA Hospitalière · <span data-version></span> · CHU Angers</div>
+  </section>
+
+</main>
+
+<nav class="bottomnav" aria-label="Navigation principale">
+  <button data-nav="home"><span class="ic">🏠</span>Accueil</button>
+  <button data-nav="eval"><span class="ic">📝</span>Évaluer</button>
+  <button data-nav="compare"><span class="ic">⚖️</span>Comparer</button>
+  <button data-nav="library"><span class="ic">🗂️</span>Mes évaluations<span class="badge-dot" id="libBadge" style="display:none">0</span></button>
+  <button data-nav="about"><span class="ic">ℹ️</span>À propos</button>
+</nav>
+
+<!-- fiche pratique -->
+<div class="overlay" id="ficheOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Fiche pratique">
+    <div class="modal-head"><strong>📋 Fiche pratique</strong><div class="seg" id="ficheTabs" style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)"><button data-tab="rm" class="active" style="color:#fff" onclick="ficheShow('rm')">Feuille de route</button><button data-tab="cl" style="color:#fff" onclick="ficheShow('cl')">Questions à l’éditeur</button></div><button class="modal-close" onclick="closeModal('ficheOverlay')" aria-label="Fermer">✕</button></div>
+    <div class="modal-body" id="ficheBody"></div>
+    <div class="modal-foot"><button class="btn btn-sm btn-secondary" onclick="printModal('ficheOverlay')">🖨 Imprimer</button><button class="btn btn-sm btn-navy" onclick="closeModal('ficheOverlay')">Fermer</button></div>
+  </div>
+</div>
+
+<div class="pwa-banner" id="pwaBanner"><img src="icons/icon-192.png" alt=""><div class="t"><strong>ROI IA Hospitalière</strong><span>Installer l’application sur votre appareil</span></div><button class="ok" onclick="installPWA()">Installer</button><button class="no" onclick="dismissPWA()">✕</button></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- déclaration statique du formulaire anonymisé pour la détection Netlify Forms -->
+<form name="resultats-anonymises-roi-ia" data-netlify="true" netlify-honeypot="bot-field" hidden><input type="hidden" name="form-name" value="resultats-anonymises-roi-ia"><input name="payload"><input name="bot-field"></form>
+
+<script type="application/json" id="app-data">/*__DATA__*/</script>
+<script>
+/*__JS__*/
+</script>
+</body>
+</html>

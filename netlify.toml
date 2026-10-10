@@ -1,0 +1,10 @@
+# Configuration Netlify — outil ROI IA Hospitalière
+# Site statique : la racine du dépôt est publiée telle quelle (aucune commande de build).
+[build]
+  publish = "."
+
+# Fonction « compteur » (statistiques d'usage anonymes, stockage Netlify Blobs).
+# Le fichier netlify/functions/compteur.mjs est déjà bundlé (aucune dépendance à installer) :
+# il se déploie aussi bien par liaison Git que par glisser-déposer du dossier.
+[functions]
+  directory = "netlify/functions"
